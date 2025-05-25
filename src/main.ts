@@ -15,7 +15,7 @@ async function bootstrap() {
 
   // Cấu hình CORS
   app.enableCors({
-    origin: configService.get('FRONTEND_URL') || 'http://localhost:3000',
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],
     credentials: true,
