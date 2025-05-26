@@ -40,7 +40,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('NestJS API')
-    .setDescription('API for managing Statistics, Banner, Blog, Contact, Member, and Admin')
+    .setDescription(
+      'API for managing Statistics, Banner, Blog, Contact, Member, and Admin',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();
