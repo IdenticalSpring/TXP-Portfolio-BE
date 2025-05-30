@@ -1,4 +1,14 @@
-import { Controller, Post, Get, Delete, Param, UseInterceptors, UploadedFile, Query, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Param,
+  UseInterceptors,
+  UploadedFile,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImagesService } from './images.service';
 import { ApiTags, ApiConsumes, ApiBody, ApiQuery } from '@nestjs/swagger';
@@ -9,15 +19,20 @@ export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', {
-    fileFilter: (req, file, cb) => {
-      if (!file.mimetype.match(/image\/(jpg|jpeg|png|gif)/)) {
-        return cb(new BadRequestException('Only image files are allowed'), false);
-      }
-      cb(null, true);
-    },
-    limits: { fileSize: 5 * 1024 * 1024 }, 
-  }))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: (req, file, cb) => {
+        if (!file.mimetype.match(/image\/(jpg|jpeg|png|gif)/)) {
+          return cb(
+            new BadRequestException('Only image files are allowed'),
+            false,
+          );
+        }
+        cb(null, true);
+      },
+      limits: { fileSize: 5 * 1024 * 1024 },
+    }),
+  )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -27,14 +42,16 @@ export class ImagesController {
       },
     },
   })
-  async uploadImage(@UploadedFile() file: Express.Multer.File): Promise<{ filename: string; url: string }> {
+  async uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<{ filename: string; url: string }> {
     return this.imagesService.uploadImage(file);
   }
 
- @Get()
+  @Get()
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'filename', required: false, type: String }) 
+  @ApiQuery({ name: 'filename', required: false, type: String })
   async findAll(
     @Query('page') page: string,
     @Query('limit') limit: string,
@@ -50,8 +67,8 @@ export class ImagesController {
     return this.imagesService.findAll(parsedPage, parsedLimit, filename);
   }
 
-  @Delete(':filename')
-  async delete(@Param('filename') filename: string): Promise<void> {
-    return this.imagesService.delete(filename);
+  @Delete(':publicId')
+  async delete(@Param('publicId') publicId: string): Promise<void> {
+    return this.imagesService.delete(publicId);
   }
 }
